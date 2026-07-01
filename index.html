@@ -315,10 +315,10 @@ section.sec { position: relative; padding: 92px 26px; overflow: hidden; }
   .cd-box { padding: 10px 10px; min-width: 48px; }
   .countdown { gap: 8px; }
   .map-frame { height: 220px; }
-  .fam-grid { flex-wrap: wrap; }
-  .fam-card { flex: 1 1 42%; padding: 14px 8px; }
-  .fam-mid { flex-direction: row; min-width: 100%; padding: 8px 0; }
-  .fam-mid .fam-line { width: auto; height: 1px; min-width: 18px; min-height: 0; }
+  .fam-grid { flex-direction: column; flex-wrap: nowrap; gap: 0; }
+  .fam-card { flex: none; width: 100%; max-width: 100%; padding: 10px 8px; }
+  .fam-mid { flex-direction: row; min-width: 0; width: 100%; padding: 10px 0; gap: 10px; }
+  .fam-mid .fam-line { width: auto; height: 1px; flex: 1; min-width: 18px; min-height: 0; }
 
   .back-btn, .music-btn {
     top: max(16px, env(safe-area-inset-top));
@@ -338,8 +338,6 @@ section.sec { position: relative; padding: 92px 26px; overflow: hidden; }
   .cover-bismillah-sub { margin-bottom: 18px; }
   .cover-date-strip { margin-top: 16px; }
   .open-btn { margin-top: 22px; }
-  .fam-card { flex: 1 1 100%; }
-  .fam-mid { min-width: 60%; }
   section.sec { padding: 44px 16px; }
   .venue-addr, .fam-req { font-size: 13px; }
 }

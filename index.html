@@ -279,6 +279,20 @@ section.sec { position: relative; padding: 92px 26px; overflow: hidden; }
 .back-btn.show { opacity: 1; pointer-events: auto; }
 .back-btn:hover { color: var(--ink); border-color: var(--line); }
 
+/* ---------- music toggle ---------- */
+.music-btn {
+  position: fixed; top: 20px; right: 20px; z-index: 99; background: rgba(255,250,244,0.75);
+  border: 1px solid rgba(181,138,63,0.28); cursor: pointer; width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: var(--gold);
+  opacity: 0; pointer-events: none; transition: opacity 0.4s, transform 0.2s, border-color 0.2s;
+}
+.music-btn.show { opacity: 1; pointer-events: auto; }
+.music-btn:hover { transform: translateY(-2px); border-color: var(--gold); }
+.music-btn svg { width: 18px; height: 18px; }
+.music-btn .icon-vol-off { display: none; }
+.music-btn.paused .icon-vol-on { display: none; }
+.music-btn.paused .icon-vol-off { display: block; }
+
 /* scroll reveal */
 .r { opacity: 0; transform: translateY(18px); filter: blur(6px); transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1), filter 0.9s ease; }
 .r.v { opacity: 1; transform: none; filter: blur(0); }
@@ -314,6 +328,11 @@ section.sec { position: relative; padding: 92px 26px; overflow: hidden; }
 </style>
 </head>
 <body>
+
+<audio id="bg-audio" loop preload="auto">
+  <source src="nikkah-song.mp3" type="audio/mpeg">
+  <source src="audio.mp3" type="audio/mpeg">
+</audio>
 
 <div class="particles" id="particles" aria-hidden="true"></div>
 
@@ -366,6 +385,19 @@ section.sec { position: relative; padding: 92px 26px; overflow: hidden; }
       <path d="M19 12H5M12 19l-7-7 7-7"/>
     </svg>
     Back
+  </button>
+
+  <button class="music-btn" id="music-btn" aria-label="Toggle music">
+    <svg class="icon-vol-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9v6h4l5 4V5L8 9H4Z"/>
+      <path d="M17.5 8.5a5 5 0 0 1 0 7"/>
+      <path d="M20 6a9 9 0 0 1 0 12"/>
+    </svg>
+    <svg class="icon-vol-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9v6h4l5 4V5L8 9H4Z"/>
+      <path d="M16 9l5 6"/>
+      <path d="M21 9l-5 6"/>
+    </svg>
   </button>
 
   <!-- ================= Bismillah ================= -->
@@ -506,6 +538,9 @@ const cover   = document.getElementById('page-cover');
 const detail  = document.getElementById('page-detail');
 const openBtn = document.getElementById('open-invitation');
 const backBtn = document.getElementById('back-btn');
+const musicBtn = document.getElementById('music-btn');
+const bgAudio = document.getElementById('bg-audio');
+bgAudio.volume = 0.55;
 
 /* floating particles */
 (function spawnParticles(){
@@ -588,17 +623,31 @@ function openDetail() {
   detail.removeAttribute('aria-hidden');
   detail.classList.add('active');
   detail.scrollTop = 0;
-  setTimeout(() => { backBtn.classList.add('show'); activateReveals(); }, 700);
+  setTimeout(() => { backBtn.classList.add('show'); musicBtn.classList.add('show'); activateReveals(); }, 700);
+
+  /* opening the invitation is a user gesture, so browsers allow audio here */
+  bgAudio.play().catch(() => { musicBtn.classList.add('paused'); });
 }
 function goBack() {
   cover.classList.remove('fading');
   detail.classList.remove('active');
   detail.setAttribute('aria-hidden', 'true');
   backBtn.classList.remove('show');
+  musicBtn.classList.remove('show');
   document.querySelectorAll('#page-detail .r, #page-detail .diamond-div').forEach(el => el.classList.remove('v'));
 }
 openBtn.addEventListener('click', openDetail);
 backBtn.addEventListener('click', goBack);
+
+musicBtn.addEventListener('click', () => {
+  if (bgAudio.paused) {
+    bgAudio.play();
+    musicBtn.classList.remove('paused');
+  } else {
+    bgAudio.pause();
+    musicBtn.classList.add('paused');
+  }
+});
 
 /* tiny hearts rising, only during the cover -> detail transition */
 function spawnHearts() {
